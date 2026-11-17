@@ -43,7 +43,7 @@ renamed to `toolchains_zig_cc`.
 Add this to your `MODULE.bazel`:
 
 ```starlark
-bazel_dep(name = "toolchains_zig_cc", version = "4.3.0")
+bazel_dep(name = "toolchains_zig_cc", version = "5.0.0")
 
 toolchains = use_extension("@toolchains_zig_cc//toolchain:ext.bzl", "toolchains")
 use_repo(toolchains, "zig_sdk")

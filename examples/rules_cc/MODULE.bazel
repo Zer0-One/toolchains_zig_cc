@@ -4,7 +4,7 @@ module(
 )
 
 bazel_dep(name = "rules_cc", version = "0.2.17")
-bazel_dep(name = "toolchains_zig_cc", version = "4.3.0")
+bazel_dep(name = "toolchains_zig_cc", version = "5.0.0")
 
 toolchains = use_extension("@toolchains_zig_cc//toolchain:ext.bzl", "toolchains")
 use_repo(toolchains, "zig_sdk")

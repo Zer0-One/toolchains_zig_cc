@@ -1,6 +1,6 @@
 module(
     name = "toolchains_zig_cc",
-    version = "4.3.0",
+    version = "5.0.0",
 )
 
 bazel_dep(name = "platforms", version = "1.1.0")
