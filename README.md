@@ -451,8 +451,8 @@ $ docker run -e CC=/usr/bin/false -ti --rm -v "$PWD:/x" -w /x debian:trixie-slim
 # chmod +x /usr/local/bin/bazelisk
 # git config --global --add safe.directory /x
 # bazelisk test //...
-# ./ci/lint
-# ./ci/zig-wrapper
+# ./tools/lint
+# ./tools/zig-utils
 ```
 ## Communication
 

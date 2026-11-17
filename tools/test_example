@@ -1,0 +1,45 @@
+#!/usr/bin/env bash
+
+# Copyright 2023 Uber Technologies, Inc.
+# Copyright 2026 toolchains_zig_cc contributors
+# Licensed under the MIT License
+
+set -xeuo pipefail
+
+example=$1
+
+# The release tarball step below ends with `git reset --hard`, which would
+# discard any uncommitted changes to tracked files. Refuse to run instead.
+if [ -n "$(git status --porcelain --untracked-files=no)" ]; then
+    >&2 echo "error: uncommitted changes to tracked files; commit or stash them first:"
+    >&2 git status --short --untracked-files=no
+    exit 1
+fi
+
+echo --- setup "$example"
+root=$(git rev-parse --show-toplevel)
+cd "$root/examples/$example"
+
+echo --- "testing examples/$example with toolchains_zig_cc pointing to git repository root"
+# lockfile_mode=off, so examples/$example/MODULE.bazel.lock does not get the override below
+bazelisk test --lockfile_mode=off "--override_module=toolchains_zig_cc=$root" --test_output=errors ...
+
+echo --- "testing examples/$example with toolchains_zig_cc pointing to a directory produced by release tarball"
+# Generate a throwaway v99.0.0 release tarball. tools/release commits and tags,
+# so give git an identity for that one command, then undo the commit and tag.
+(
+    cd "$root"
+    prev_ref=$(git rev-parse HEAD)
+    trap 'git tag -d v99.0.0 || true; git reset --hard "$prev_ref"' EXIT
+    GIT_AUTHOR_NAME="CI Bot" GIT_AUTHOR_EMAIL="ci@example.com" \
+    GIT_COMMITTER_NAME="CI Bot" GIT_COMMITTER_EMAIL="ci@example.com" \
+        tools/release v99.0.0
+    file toolchains_zig_cc-v99.0.0.tar.gz | grep -q 'gzip compressed data'
+)
+
+# extract the release tarball to a temporary directory
+REL=$(mktemp -d); trap 'rm -fr $REL' EXIT
+tar -vxf "../../toolchains_zig_cc-v99.0.0.tar.gz" -C "$REL"
+
+# lockfile_mode=off, so examples/$example/MODULE.bazel.lock does not get the override below
+bazelisk test --lockfile_mode=off "--override_module=toolchains_zig_cc=$REL" --test_output=errors ...

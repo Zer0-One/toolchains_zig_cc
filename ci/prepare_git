@@ -1,5 +1,0 @@
-#!/bin/sh
-set -ex
-
-git config --global user.email "ci@example.com"
-git config --global user.name "CI Bot"

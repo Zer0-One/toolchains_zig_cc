@@ -56,11 +56,10 @@ jobs:
         if: runner.os == 'macOS'
 
       # Linux, macOS and Windows
-      - run: ci/list_toolchains_platforms
       - run: bazelisk test //...
-      - run: ci/prepare_git && ci/test_example rules_cc
-      - run: ci/prepare_git && ci/test_example rules_go
-      - run: ci/zig-utils
+      - run: tools/test_example rules_cc
+      - run: tools/test_example rules_go
+      - run: tools/zig-utils
 
       # Test the Zig toolchain for Darwin on Darwin.
       - run: bazelisk test --config=macos_toolchains --@rules_go//go/config:static --@rules_go//go/config:pure //test/c/...
@@ -68,5 +67,5 @@ jobs:
 
       # Windows problems:
       # protoc does not compile due to `-lpthread`.
-      - run: ci/lint
+      - run: tools/lint
         if: runner.os != 'Windows'

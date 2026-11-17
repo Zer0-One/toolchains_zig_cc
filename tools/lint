@@ -34,7 +34,7 @@ $ZIG fmt "${zigfiles[@]}"
 #bazelisk run @rules_go//go -- fmt -w "${gofiles[@]}"
 
 >&2 echo "--- buildifier :bazel:"
-tools/buildifier -r -mode fix "$PWD"
+bazelisk run @buildifier_prebuilt//:buildifier -- -r -mode fix "$PWD"
 
 >&2 echo "--- Gazelle :goat:"
 bazelisk run //:gazelle -- -mode fix

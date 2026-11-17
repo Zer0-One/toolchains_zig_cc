@@ -1,8 +1,0 @@
-#!/bin/sh
-
-# Copyright 2023 Uber Technologies, Inc.
-# Licensed under the MIT License
-
-set -xeu
-
-exec bazelisk run @buildifier_prebuilt//:buildifier -- "$@"
