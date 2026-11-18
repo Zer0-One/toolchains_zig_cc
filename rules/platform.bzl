@@ -22,12 +22,10 @@ def _platform_binary_impl(ctx):
         platform_sanitized,
     )
     dst = ctx.actions.declare_file(dstname)
-    src = ctx.file.src
-    ctx.actions.run(
-        outputs = [dst],
-        inputs = [src, ctx.file._cp],
-        executable = ctx.file._cp.path,
-        arguments = [src.path, dst.path],
+    ctx.actions.symlink(
+        output = dst,
+        target_file = ctx.file.src,
+        is_executable = True,
     )
     return [DefaultInfo(
         files = depset([dst]),
@@ -42,11 +40,6 @@ _attrs = {
     ),
     "platform": attr.string(
         doc = "The platform to build the target for.",
-    ),
-    "_cp": attr.label(
-        default = "//rules:cp",
-        allow_single_file = True,
-        cfg = "exec",
     ),
 }
 
