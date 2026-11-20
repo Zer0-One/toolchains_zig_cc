@@ -280,6 +280,18 @@ auto-detection (read: fallback to non-hermetic toolchain) is a footgun best
 avoided. This option is not documented in bazel, so may break. If you intend to
 use the hermetic toolchain exclusively, it won't hurt.
 
+### Features
+
+#### `external_include_paths`
+
+When enabled, third-party include directories will be passed with `-isystem`
+instead of `-iquote`. Headers from these directories can then be included using
+angle brackets, e.g. `#include <third_party.hpp>` instead of `#include
+"third_party.hpp"`, and are treated as system headers, suppressing warnings from
+them.
+
+<!-- TODO: document other interesting features. -->
+
 ### Use case: zig-cc for targets for multiple libc variants
 
 When some targets need to be build with different libcs (either different
